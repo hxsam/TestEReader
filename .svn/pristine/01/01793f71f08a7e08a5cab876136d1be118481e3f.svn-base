@@ -1,0 +1,181 @@
+package com.sag.ereader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+
+
+
+
+
+
+
+
+
+
+
+import nl.siegmann.epublib.domain.Book;
+import nl.siegmann.epublib.domain.TOCReference;
+import nl.siegmann.epublib.epub.EpubReader;
+import android.app.Activity;
+import android.content.res.AssetManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.Bundle;
+import android.text.TextUtils;
+import android.util.Log;
+import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.SimpleAdapter;
+import android.widget.TextView;
+
+
+public class BookViewActivity extends Activity {
+
+  /** Called when the activity is first created. */
+  private String book_to_read;
+  private ArrayList<String> scripts = new ArrayList<String>();
+  @Override
+
+  public void onCreate(Bundle savedInstanceState) {
+	  setContentView(R.layout.activity_book_view);
+
+	  Bundle extras = getIntent().getExtras();
+	  if (extras != null) {
+	      book_to_read = extras.getString("chosen_book");
+	  }
+
+    super.onCreate(savedInstanceState);
+
+   
+
+    AssetManager assetManager = getAssets();
+
+    try {
+
+      // find InputStream for book
+
+      InputStream epubInputStream = assetManager
+
+          .open("epub/"+book_to_read);
+
+      // Load Book from inputStream
+
+      Book book = (new EpubReader()).readEpub(epubInputStream);
+
+      // Log the book's authors
+      
+      
+
+      Log.i("epublib", "author(s): " + book.getMetadata().getAuthors());
+      TextView book_author = (TextView) findViewById(R.id.bAuthor);
+      
+      String authors_list = TextUtils.join(" ", book.getMetadata().getAuthors());
+      Log.i("epublib", "authors_list: "+authors_list);
+      
+      //check how many authors of this book
+      int authors_number = book.getMetadata().getAuthors().size();
+      Log.i("epublib", "number of authors: "+authors_number);
+      
+      book_author.setText("Author: "+authors_list);
+
+      // Log the book's title
+
+      Log.i("epublib", "title: " + book.getTitle());
+      TextView book_title = (TextView) findViewById(R.id.bTitle);
+      book_title.setText(book.getTitle());
+
+      // Log the book's coverimage property
+
+      Bitmap coverImage = BitmapFactory.decodeStream(book.getCoverImage()
+
+          .getInputStream());
+
+      Log.i("epublib", "Coverimage is " + coverImage.getWidth() + " by "
+
+          + coverImage.getHeight() + " pixels");
+      
+      ImageView bCover = (ImageView) findViewById(R.id.bCoverImage);
+      bCover.setImageBitmap(coverImage);
+      // Log the tale of contents
+
+      logTableOfContents(book.getTableOfContents().getTocReferences(), 0);
+
+    } catch (IOException e) {
+
+      Log.e("epublib", e.getMessage());
+
+    }
+    
+    ListView lv = (ListView) findViewById(R.id.bChapter);
+    
+    for(String script: scripts){
+    	Log.i("epublib", "chapter: "+script);
+    }
+    
+    ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.activity_book_view,R.id.bTitle, scripts);
+    lv.setAdapter(adapter);
+   
+    
+   
+  }
+
+/**
+
+   * Recursively Log the Table of Contents
+
+   *
+
+   * @param tocReferences
+
+   * @param depth
+
+   */
+
+  private void logTableOfContents(List<TOCReference> tocReferences, int depth) {
+
+    if (tocReferences == null) {
+
+      return;
+
+    }
+   
+    for (TOCReference tocReference : tocReferences) {
+
+      StringBuilder tocString = new StringBuilder();
+
+      for (int i = 0; i < depth; i++) {
+
+        tocString.append("\t");
+
+      }
+
+      tocString.append(tocReference.getTitle());
+      
+      //String title = tocReference.getTitle();
+      
+     /* TextView book_title = (TextView) findViewById(R.id.bTableOfContents);
+      book_title.setText(title);*/
+
+      
+      Log.i("epublib", tocString.toString());
+     /* LinearLayout linearLayout = (LinearLayout) findViewById(R.id.bookInfoContainer);
+   
+      TextView content = new TextView(this);
+      content.setText(tocString.toString());
+
+      linearLayout.addView(content);*/
+      
+      scripts.add(tocString.toString());
+      
+
+      logTableOfContents(tocReference.getChildren(), depth + 1);
+
+    }
+
+  }
+
+}

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Epub Reader</string>
+    
+    <!-- Menu Strings -->
+    <string name="action_settings">ตั้งค่า</string>
+    <string name="action_rateapp">Rate App</string>
+    <string name="action_refresh">Refresh</string>
+    
+    <string name="hello_world">Hello world!</string>
+
+    
+    
+      <!-- Navigation Drawer Menu Items -->
+    <string-array name="nav_drawer_items">
+        <item >หนังสือที่อ่านล่าสุด</item>
+        <item >ชั้นหนังสือของฉัน</item>
+       <!--  <item>Test Book List</item> -->
+      
+    </string-array>
+    
+    <!-- List Item Icons(Images) with strings(text of company name) -->
+    <!-- Keep them with titles array accordingly -->
+    <array name="nav_drawer_icons">
+        <item>@drawable/ic_recent</item>
+        <item>@drawable/ic_myshelf</item>
+        <!-- <item>@drawable/ic_myshelf</item> -->
+      
+    </array>
+    
+
+	<!-- drawer_list_item Imageview Description  -->
+    <string name="description_list_icon">Item Icon</string>
+    
+    <!-- check what book's name is chosen to be read -->
+    <string name ="chosen_book">Chosen Book</string>
+    
+   <!-- epub part -->
+   <string name="Refresh">Refresh</string>
+   <string name="title">ชื่อหนังสือ</string>
+   <string name="author">ผู้แต่ง</string>
+   <string name="default_filename">Default Filename</string>
+   <string name="default_last_read">None</string>
+   <string name="default_added_to_library">None</string>
+
+
+    
+</resources>
